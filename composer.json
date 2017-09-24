@@ -1,0 +1,29 @@
+{
+  "name": "ivir3zam/grabber",
+  "type": "library",
+  "description": "Web grabbing library for global and automated usage",
+  "keywords": [
+    "grabber",
+    "crawler",
+    "extractor"
+  ],
+  "homepage": "https://ivir3zam.github.com/Grabber",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Mohammad Reza Maghoul",
+      "email": "m.reza.maghool@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4",
+    "fabpot/goutte": "~3.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "IVIR3aM\\Grabber\\": "src",
+      "IVIR3aM\\Grabber\\Tests\\": "tests"
+    }
+  },
+  "minimum-stability": "dev"
+}
