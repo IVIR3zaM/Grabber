@@ -1,19 +1,18 @@
 <?php
 namespace IVIR3aM\Grabber\Tests;
 
-use IVIR3aM\Grabber\Logger\Closure;
 use PHPUnit_Framework_TestCase;
 
 class ResourceTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var ResourceFake
+     * @var FakeResource
      */
     private $resource;
 
     public function setUp()
     {
-        $this->resource = new ResourceFake();
+        $this->resource = new FakeResource();
     }
 
     public function testSettings()
@@ -30,11 +29,30 @@ class ResourceTest extends PHPUnit_Framework_TestCase
 
         $this->assertArrayHasKey('foo', $settings);
         $this->assertCount(2, $settings);
-        $this->assertSame('bar', $settings['foo']);
+        $this->assertSame('bar', $this->resource->getSetting('foo'));
 
         $this->resource->unsetSetting('test');
-        $settings = $this->resource->getSettings();
+        $this->assertSame(1, $this->resource->count());
 
-        $this->assertCount(1, $settings);
+        $this->assertSame(null, $this->resource->getSetting('some'));
+    }
+
+    public function testConstructionDestruction()
+    {
+        $this->resource = new FakeResource(['foo' => 'bar']);
+        $this->assertSame(true, $this->resource->isConnected());
+
+        $this->assertSame('bar', $this->resource->getSetting('foo'));
+
+        $this->resource->__destruct();
+        $this->assertSame(false, $this->resource->isConnected());
+    }
+
+    /**
+     * @expectedException TypeError
+     */
+    public function testInvalidFieldName()
+    {
+        $this->resource->setSetting([], 123);
     }
 }
