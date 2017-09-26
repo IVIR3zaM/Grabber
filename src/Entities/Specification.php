@@ -1,6 +1,7 @@
 <?php
 namespace IVIR3aM\Grabber\Entities;
 
+use ReflectionClass;
 /**
  * Class Specification
  * @package IVIR3aM\Grabber\Entities
@@ -12,7 +13,24 @@ class Specification implements \Countable
     const BOOLEAN = 'Boolean';
     const FILE = 'File';
 
+    /**
+     * @var array
+     */
     protected $fields = [];
+
+    /**
+     * @param string $name
+     * @throws Exception
+     */
+    protected function testFieldName(string $name)
+    {
+        if (!preg_match('/^[a-z]+[a-z0-9]*$/i', $name)) {
+            throw new Exception(sprintf('Invalid Field Name "%s"', $name));
+        }
+        if (isset($this->fields[$name])) {
+            throw new Exception(sprintf('Repeated Field Name "%s"', $name));
+        }
+    }
 
     /**
      * @param string $name
@@ -22,19 +40,7 @@ class Specification implements \Countable
      */
     protected function addField(string $name, string $type) : self
     {
-        if (isset($this->fields[$name])) {
-            throw new Exception(sprintf('Repeated Field name "%s"', $name));
-        }
-        return $this->setField($name, $type);
-    }
-
-    /**
-     * @param string $name
-     * @param string $type
-     * @return Specification
-     */
-    protected function setField(string $name, string $type) : self
-    {
+        $this->testFieldName($name);
         $this->fields[$name] = $type;
         return $this;
     }
@@ -92,11 +98,42 @@ class Specification implements \Countable
     }
 
     /**
+     * @param string $name
+     * @param Specification $entity
+     * @return Specification
+     * @throws Exception
+     */
+    public function addEntity(string $name, Specification $entity) : self
+    {
+        $this->testFieldName($name);
+        $this->fields[$name] = $entity;
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function __get(string $name)
+    {
+        if (isset($this->fields[$name])) {
+            return $this->fields[$name];
+        }
+    }
+
+    /**
      * @return array
      */
     public function getFields() : array
     {
-        return $this->fields;
+        $fields = [];
+        foreach ($this->fields as $key => $value) {
+            if (is_a($value, Specification::class)) {
+                $value = $value->getFields();
+            }
+            $fields[$key] = $value;
+        }
+        return $fields;
     }
 
     /**

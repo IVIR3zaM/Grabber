@@ -51,7 +51,7 @@ class ResourceTest extends TestCase
     /**
      * @expectedException TypeError
      */
-    public function testInvalidFieldName()
+    public function testInvalidSettingName()
     {
         $this->resource->setSetting([], 123);
     }

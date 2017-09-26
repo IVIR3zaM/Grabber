@@ -55,4 +55,47 @@ class SpecificationTest extends TestCase
         $this->specification->addText('test');
         $this->specification->addFile('test');
     }
+
+    /**
+     * @expectedException \IVIR3aM\Grabber\Entities\Exception
+     */
+    public function testSpaceInFieldName()
+    {
+        $this->specification->addText(' test');
+    }
+
+    /**
+     * @expectedException \IVIR3aM\Grabber\Entities\Exception
+     */
+    public function testStartsWithNumberInFieldName()
+    {
+        $this->specification->addText('123test');
+    }
+
+    /**
+     * @expectedException \IVIR3aM\Grabber\Entities\Exception
+     */
+    public function testInvalidInFieldName()
+    {
+        $this->specification->addText('test@2');
+    }
+
+    public function testNestedSpecification()
+    {
+        $child = new Specification();
+        $child->addText('test');
+        $this->specification->addEntity('child', $child);
+        
+        $this->assertCount(1, $this->specification);
+        $this->assertSame(['child' => ['test' => Specification::TEXT]], $this->specification->getFields());
+
+        $child->addBoolean('foo');
+        $this->assertCount(2, $child);
+        $this->assertCount(1, $this->specification);
+        $this->assertSame(['child' => ['test' => Specification::TEXT, 'foo' => Specification::BOOLEAN]], $this->specification->getFields());
+
+        $this->assertSame($child, $this->specification->child);
+        $this->assertSame(['test' => Specification::TEXT, 'foo' => Specification::BOOLEAN], $this->specification->child->getFields());
+        $this->assertSame(Specification::TEXT, $this->specification->child->test);
+    }
 }
