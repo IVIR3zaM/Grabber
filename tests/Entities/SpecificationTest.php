@@ -2,9 +2,9 @@
 namespace IVIR3aM\Grabber\Tests\Entities;
 
 use IVIR3aM\Grabber\Entities\Specification;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class SpecificationTest extends PHPUnit_Framework_TestCase
+class SpecificationTest extends TestCase
 {
     /**
      * @var Specification

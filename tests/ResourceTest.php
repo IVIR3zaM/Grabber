@@ -1,9 +1,9 @@
 <?php
 namespace IVIR3aM\Grabber\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class ResourceTest extends PHPUnit_Framework_TestCase
+class ResourceTest extends TestCase
 {
     /**
      * @var FakeResource
