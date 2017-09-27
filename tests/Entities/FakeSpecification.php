@@ -4,11 +4,11 @@ namespace IVIR3aM\Grabber\Tests\Entities;
 use IVIR3aM\Grabber\Entities\Specification;
 use IVIR3aM\Grabber\Entities\SpecificationInterface;
 
-class FakeSpecification extends Specification
+class FakeSpecification extends Specification implements FakeSpecificationInterface
 {
-    public function addUnknown(string $name) : SpecificationInterface
+    public function addInteger(string $name) : SpecificationInterface
     {
-        $this->fields[$name] = 'Unknown';
+        $this->fields[$name] = FakeSpecificationInterface::INTEGER;
         return $this;
     }
 }

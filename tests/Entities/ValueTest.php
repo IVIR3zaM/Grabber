@@ -111,7 +111,17 @@ class ValueTest extends TestCase
     public function testUnknownFieldType()
     {
         $this->value->setSpecification(new FakeSpecification());
-        $this->value->getSpecification()->addUnknown('unknown');
-        $this->value->setValue('unknown', 1);
+        $this->value->getSpecification()->addInteger('int');
+        $this->value->setValue('int', 1);
+    }
+
+    public function testExtensionality()
+    {
+        $this->value = new FakeValue(new FakeSpecification());
+        $this->value->getSpecification()->addInteger('int');
+        $this->assertCount(1, $this->value);
+
+        $this->value->setValue('int', 1.23);
+        $this->assertSame(1, $this->value->int);
     }
 }
