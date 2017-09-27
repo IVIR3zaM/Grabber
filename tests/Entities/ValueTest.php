@@ -77,6 +77,13 @@ class ValueTest extends TestCase
         $list['entity']['test'] = 'Lorem Ipsum';
         $this->assertSame($list, $this->value->getValues());
 
+        $this->value->setValue('entity', new Value($spec));
+        $this->value->getValue('entity')->setValue('test', 'tested');
+        $this->assertSame('tested', $this->value->entity->test);
+
+        $list['entity']['test'] = 'tested';
+        $this->assertSame($list, $this->value->getValues());
+
         $this->assertNull($this->value->getValue('test'));
     }
 
