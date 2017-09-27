@@ -115,7 +115,7 @@ class Value implements ValueInterface, \Countable
     public function getValues() : array
     {
         $list = [];
-        foreach ($this->getSpecification()->getFields() as $name => $type) {
+        foreach (array_keys($this->getSpecification()->getFields()) as $name) {
             $value = $this->getValue($name);
             if (is_object($value) && is_a($value, ValueInterface::class)) {
                 $value = $value->getValues();
