@@ -2,6 +2,7 @@
 namespace IVIR3aM\Grabber\Tests\Entities;
 
 use IVIR3aM\Grabber\Entities\Specification;
+use IVIR3aM\Grabber\Entities\SpecificationInterface;
 use PHPUnit\Framework\TestCase;
 
 class SpecificationTest extends TestCase
@@ -20,23 +21,23 @@ class SpecificationTest extends TestCase
     {
         $this->specification->addText('text');
         $this->assertCount(1, $this->specification);
-        $this->assertSame(['text' => Specification::TEXT], $this->specification->getFields());
+        $this->assertSame(['text' => SpecificationInterface::TEXT], $this->specification->getFields());
 
         $this->specification->addNumber('number');
         $this->assertCount(2, $this->specification);
-        $this->assertSame(['text' => Specification::TEXT, 'number' => Specification::NUMBER], $this->specification->getFields());
+        $this->assertSame(['text' => SpecificationInterface::TEXT, 'number' => SpecificationInterface::NUMBER], $this->specification->getFields());
 
         $this->specification->addBoolean('bool');
         $this->assertCount(3, $this->specification);
-        $this->assertSame(['text' => Specification::TEXT, 'number' => Specification::NUMBER, 'bool' => Specification::BOOLEAN], $this->specification->getFields());
+        $this->assertSame(['text' => SpecificationInterface::TEXT, 'number' => SpecificationInterface::NUMBER, 'bool' => SpecificationInterface::BOOLEAN], $this->specification->getFields());
 
         $this->specification->removeField('text');
         $this->assertCount(2, $this->specification);
-        $this->assertSame(['number' => Specification::NUMBER, 'bool' => Specification::BOOLEAN], $this->specification->getFields());
+        $this->assertSame(['number' => SpecificationInterface::NUMBER, 'bool' => SpecificationInterface::BOOLEAN], $this->specification->getFields());
 
         $this->specification->removeField('bool');
         $this->assertCount(1, $this->specification);
-        $this->assertSame(['number' => Specification::NUMBER], $this->specification->getFields());
+        $this->assertSame(['number' => SpecificationInterface::NUMBER], $this->specification->getFields());
 
         $this->specification->removeField('number');
         $this->assertCount(0, $this->specification);
@@ -44,7 +45,7 @@ class SpecificationTest extends TestCase
 
         $this->specification->addFile('file');
         $this->assertCount(1, $this->specification);
-        $this->assertSame(['file' => Specification::FILE], $this->specification->getFields());
+        $this->assertSame(['file' => SpecificationInterface::FILE], $this->specification->getFields());
     }
 
     /**
@@ -79,6 +80,11 @@ class SpecificationTest extends TestCase
     {
         $this->specification->addText('test@2');
     }
+    
+    public function testMissedField()
+    {
+        $this->assertSame(null, $this->specification->test);
+    }
 
     public function testNestedSpecification()
     {
@@ -87,15 +93,15 @@ class SpecificationTest extends TestCase
         $this->specification->addEntity('child', $child);
         
         $this->assertCount(1, $this->specification);
-        $this->assertSame(['child' => ['test' => Specification::TEXT]], $this->specification->getFields());
+        $this->assertSame(['child' => ['test' => SpecificationInterface::TEXT]], $this->specification->getFields());
 
         $child->addBoolean('foo');
         $this->assertCount(2, $child);
         $this->assertCount(1, $this->specification);
-        $this->assertSame(['child' => ['test' => Specification::TEXT, 'foo' => Specification::BOOLEAN]], $this->specification->getFields());
+        $this->assertSame(['child' => ['test' => SpecificationInterface::TEXT, 'foo' => SpecificationInterface::BOOLEAN]], $this->specification->getFields());
 
         $this->assertSame($child, $this->specification->child);
-        $this->assertSame(['test' => Specification::TEXT, 'foo' => Specification::BOOLEAN], $this->specification->child->getFields());
-        $this->assertSame(Specification::TEXT, $this->specification->child->test);
+        $this->assertSame(['test' => SpecificationInterface::TEXT, 'foo' => SpecificationInterface::BOOLEAN], $this->specification->child->getFields());
+        $this->assertSame(SpecificationInterface::TEXT, $this->specification->child->test);
     }
 }

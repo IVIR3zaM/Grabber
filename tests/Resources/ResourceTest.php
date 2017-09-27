@@ -1,5 +1,5 @@
 <?php
-namespace IVIR3aM\Grabber\Tests;
+namespace IVIR3aM\Grabber\Tests\Resources;
 
 use PHPUnit\Framework\TestCase;
 

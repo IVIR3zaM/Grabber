@@ -1,18 +1,12 @@
 <?php
 namespace IVIR3aM\Grabber\Entities;
 
-use ReflectionClass;
 /**
  * Class Specification
  * @package IVIR3aM\Grabber\Entities
  */
-class Specification implements \Countable
+class Specification implements SpecificationInterface, \Countable
 {
-    const TEXT = 'Text';
-    const NUMBER = 'Number';
-    const BOOLEAN = 'Boolean';
-    const FILE = 'File';
-
     /**
      * @var array
      */
@@ -35,10 +29,10 @@ class Specification implements \Countable
     /**
      * @param string $name
      * @param string $type
-     * @return Specification
+     * @return SpecificationInterface
      * @throws Exception
      */
-    protected function addField(string $name, string $type) : self
+    protected function addField(string $name, string $type) : SpecificationInterface
     {
         $this->testFieldName($name);
         $this->fields[$name] = $type;
@@ -47,9 +41,9 @@ class Specification implements \Countable
 
     /**
      * @param string $name
-     * @return Specification
+     * @return SpecificationInterface
      */
-    public function removeField(string $name) : self
+    public function removeField(string $name) : SpecificationInterface
     {
         if(isset($this->fields[$name])) {
             unset($this->fields[$name]);
@@ -59,51 +53,51 @@ class Specification implements \Countable
 
     /**
      * @param string $name
-     * @return Specification
+     * @return SpecificationInterface
      * @throws Exception
      */
-    public function addText(string $name) : self
+    public function addText(string $name) : SpecificationInterface
     {
         return $this->addField($name, static::TEXT);
     }
 
     /**
      * @param string $name
-     * @return Specification
+     * @return SpecificationInterface
      * @throws Exception
      */
-    public function addNumber(string $name) : self
+    public function addNumber(string $name) : SpecificationInterface
     {
         return $this->addField($name, static::NUMBER);
     }
 
     /**
      * @param string $name
-     * @return Specification
+     * @return SpecificationInterface
      * @throws Exception
      */
-    public function addBoolean(string $name) : self
+    public function addBoolean(string $name) : SpecificationInterface
     {
         return $this->addField($name, static::BOOLEAN);
     }
 
     /**
      * @param string $name
-     * @return Specification
+     * @return SpecificationInterface
      * @throws Exception
      */
-    public function addFile(string $name) : self
+    public function addFile(string $name) : SpecificationInterface
     {
         return $this->addField($name, static::FILE);
     }
 
     /**
      * @param string $name
-     * @param Specification $entity
-     * @return Specification
+     * @param SpecificationInterface $entity
+     * @return SpecificationInterface
      * @throws Exception
      */
-    public function addEntity(string $name, Specification $entity) : self
+    public function addEntity(string $name, SpecificationInterface $entity) : SpecificationInterface
     {
         $this->testFieldName($name);
         $this->fields[$name] = $entity;
@@ -114,11 +108,20 @@ class Specification implements \Countable
      * @param string $name
      * @return mixed
      */
-    public function __get(string $name)
+    public function getField(string $name)
     {
         if (isset($this->fields[$name])) {
             return $this->fields[$name];
         }
+    }
+
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function __get(string $name)
+    {
+        return $this->getField($name);
     }
 
     /**
@@ -128,7 +131,7 @@ class Specification implements \Countable
     {
         $fields = [];
         foreach ($this->fields as $key => $value) {
-            if (is_a($value, Specification::class)) {
+            if (is_a($value, SpecificationInterface::class)) {
                 $value = $value->getFields();
             }
             $fields[$key] = $value;

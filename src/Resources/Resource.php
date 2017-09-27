@@ -1,16 +1,15 @@
 <?php
-namespace IVIR3aM\Grabber;
+namespace IVIR3aM\Grabber\Resources;
 
-use IVIR3aM\Grabber\Entities\Map as EntityMap;
-use IVIR3aM\Grabber\Entities\Value as EntityValue;
-use IVIR3aM\Grabber\Resources\Exception;
+use IVIR3aM\Grabber\Entities\MapInterface;
+use IVIR3aM\Grabber\Entities\ValueInterface;
 
 /**
  * Class Resource
  * Abstraction Layer for any kind of resource
  * @package IVIR3aM\Grabber
  */
-abstract class Resource implements \Countable
+abstract class Resource implements ResourceInterface, \Countable
 {
     /**
      * @var array
@@ -39,9 +38,9 @@ abstract class Resource implements \Countable
     /**
      * Setting all settings required
      * @param array $settings
-     * @return Resource
+     * @return ResourceInterface
      */
-    public function setSettings(array $settings) : Resource
+    public function setSettings(array $settings) : ResourceInterface
     {
         $this->settings = $settings;
         return $this;
@@ -60,9 +59,9 @@ abstract class Resource implements \Countable
      * Set a single setting
      * @param string $key
      * @param $value
-     * @return Resource
+     * @return ResourceInterface
      */
-    public function setSetting(string $key, $value) : Resource
+    public function setSetting(string $key, $value) : ResourceInterface
     {
         $this->settings[$key] = $value;
         return $this;
@@ -104,15 +103,15 @@ abstract class Resource implements \Countable
     /**
      * Connect to resource
      * @throws Exception on connection failure
-     * @return Resource
+     * @return ResourceInterface
      */
-    abstract public function connect() : Resource;
+    abstract public function connect() : ResourceInterface;
 
     /**
      * Disconnect from resource
-     * @return Resource
+     * @return ResourceInterface
      */
-    abstract public function disconnect() : Resource;
+    abstract public function disconnect() : ResourceInterface;
 
     /**
      * Check connection to resource
@@ -122,18 +121,18 @@ abstract class Resource implements \Countable
 
     /**
      * Fetch an Entity from Resource base on Identifier and Entity Map
-     * @param EntityMap $entityMap
+     * @param MapInterface $entityMap
      * @param string $identifier
      * @throws Exception on any failure
-     * @return EntityValue
+     * @return ValueInterface
      */
-    abstract public function fetch(EntityMap $entityMap, string $identifier) : EntityValue;
+    abstract public function fetch(MapInterface $entityMap, string $identifier) : ValueInterface;
 
     /**
      * Push and save an Entity to Resource base on Entity Map
-     * @param EntityMap $entityMap
-     * @param EntityValue $entityValue
+     * @param MapInterface $entityMap
+     * @param ValueInterface $entityValue
      * @return bool whether pushing was successful or not
      */
-    abstract public function push(EntityMap $entityMap, EntityValue $entityValue) : bool;
+    abstract public function push(MapInterface $entityMap, ValueInterface $entityValue) : bool;
 }
