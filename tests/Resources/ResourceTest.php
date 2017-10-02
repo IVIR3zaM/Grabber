@@ -40,12 +40,8 @@ class ResourceTest extends TestCase
     public function testConstructionDestruction()
     {
         $this->resource = new FakeResource(['foo' => 'bar']);
-        $this->assertSame(true, $this->resource->isConnected());
 
         $this->assertSame('bar', $this->resource->getSetting('foo'));
-
-        $this->resource->__destruct();
-        $this->assertSame(false, $this->resource->isConnected());
     }
 
     /**

@@ -1,15 +1,16 @@
 <?php
 namespace IVIR3aM\Grabber\Resources;
 
-use IVIR3aM\Grabber\Entities\MapInterface;
-use IVIR3aM\Grabber\Entities\ValueInterface;
+use IVIR3aM\Grabber\Entities\Maps\AbstractMap;
+use IVIR3aM\Grabber\Entities\AbstractValue;
+use IVIR3aM\Grabber\Entities\AbstractValueFactory;
 
 /**
- * Class Resource
+ * Class AbstractResource
  * Abstraction Layer for any kind of resource
  * @package IVIR3aM\Grabber
  */
-abstract class Resource implements ResourceInterface, \Countable
+abstract class AbstractResource implements \Countable
 {
     /**
      * @var array
@@ -24,23 +25,15 @@ abstract class Resource implements ResourceInterface, \Countable
     {
         if (is_array($settings)) {
             $this->setSettings($settings);
-            $this->connect();
-        }
-    }
-
-    public function __destruct()
-    {
-        if ($this->isConnected()) {
-            $this->disconnect();
         }
     }
 
     /**
      * Setting all settings required
      * @param array $settings
-     * @return ResourceInterface
+     * @return AbstractResource
      */
-    public function setSettings(array $settings) : ResourceInterface
+    public function setSettings(array $settings) : AbstractResource
     {
         $this->settings = $settings;
         return $this;
@@ -59,9 +52,9 @@ abstract class Resource implements ResourceInterface, \Countable
      * Set a single setting
      * @param string $key
      * @param $value
-     * @return ResourceInterface
+     * @return AbstractResource
      */
-    public function setSetting(string $key, $value) : ResourceInterface
+    public function setSetting(string $key, $value) : AbstractResource
     {
         $this->settings[$key] = $value;
         return $this;
@@ -101,38 +94,36 @@ abstract class Resource implements ResourceInterface, \Countable
     }
 
     /**
-     * Connect to resource
-     * @throws Exception on connection failure
-     * @return ResourceInterface
-     */
-    abstract public function connect() : ResourceInterface;
-
-    /**
-     * Disconnect from resource
-     * @return ResourceInterface
-     */
-    abstract public function disconnect() : ResourceInterface;
-
-    /**
-     * Check connection to resource
-     * @return bool whether we are connected to resource or not
-     */
-    abstract public function isConnected() : bool;
-
-    /**
-     * Fetch an Entity from Resource base on Identifier and Entity Map
-     * @param MapInterface $entityMap
-     * @param string $identifier
+     * Fetch an Entity from Resource base on Entity Map
+     * @param AbstractMap $map
+     * @param AbstractValueFactory $factory
      * @throws Exception on any failure
-     * @return ValueInterface
+     * @return AbstractValue
      */
-    abstract public function fetch(MapInterface $entityMap, string $identifier) : ValueInterface;
+    abstract public function fetch(AbstractMap $map, AbstractValueFactory $factory) : AbstractValue;
 
     /**
      * Push and save an Entity to Resource base on Entity Map
-     * @param MapInterface $entityMap
-     * @param ValueInterface $entityValue
+     * @param AbstractMap $map
+     * @param AbstractValue $entity
      * @return bool whether pushing was successful or not
      */
-    abstract public function push(MapInterface $entityMap, ValueInterface $entityValue) : bool;
+    abstract public function push(AbstractMap $map, AbstractValue $entity) : bool;
+
+    /**
+     * Fetch all Entities from Resource base on Entity Map
+     * @param AbstractMap $map
+     * @param AbstractValueFactory $factory
+     * @throws Exception on any failure
+     * @return array
+     */
+    abstract public function fetchAll(AbstractMap $map, AbstractValueFactory $factory) : array;
+
+    /**
+     * Push and save all Entities to Resource base on Entity Map
+     * @param AbstractMap $map
+     * @param AbstractValue[] $entities
+     * @return bool whether pushing was successful or not
+     */
+    abstract public function pushAll(AbstractMap $map, array $entities) : bool;
 }

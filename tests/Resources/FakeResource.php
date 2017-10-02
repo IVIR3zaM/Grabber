@@ -1,39 +1,31 @@
 <?php
 namespace IVIR3aM\Grabber\Tests\Resources;
 
-use IVIR3aM\Grabber\Entities\MapInterface;
-use IVIR3aM\Grabber\Entities\ValueInterface;
-use IVIR3aM\Grabber\Resources\Resource;
-use IVIR3aM\Grabber\Resources\ResourceInterface;
+use IVIR3aM\Grabber\Entities\AbstractValueFactory;
+use IVIR3aM\Grabber\Entities\Maps\AbstractMap;
+use IVIR3aM\Grabber\Entities\AbstractValue;
+use IVIR3aM\Grabber\Resources\Exception;
+use IVIR3aM\Grabber\Resources\AbstractResource;
 
-class FakeResource extends Resource
+class FakeResource extends AbstractResource
 {
-    protected $isConnected = false;
-
-    public function connect() : ResourceInterface
+    public function fetch(AbstractMap $map, AbstractValueFactory $factory) : AbstractValue
     {
-        $this->isConnected = true;
-        return $this;
+        throw new Exception('This is only a test');
     }
 
-    public function disconnect() : ResourceInterface
+    public function push(AbstractMap $map, AbstractValue $entity) : bool
     {
-        $this->isConnected = false;
-        return $this;
+        return false;
     }
 
-    public function isConnected() : bool
+    public function fetchAll(AbstractMap $map, AbstractValueFactory $factory) : array
     {
-        return $this->isConnected;
+        throw new Exception('This is only a test');
     }
 
-    public function fetch(MapInterface $entityMap, string $identifier) : ValueInterface
+    public function pushAll(AbstractMap $map, array $entities) : bool
     {
-        return null;
-    }
-
-    public function push(MapInterface $entityMap, ValueInterface $entityValue) : bool
-    {
-        return true;
+        return false;
     }
 }

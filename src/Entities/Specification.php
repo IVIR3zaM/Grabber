@@ -5,7 +5,7 @@ namespace IVIR3aM\Grabber\Entities;
  * Class Specification
  * @package IVIR3aM\Grabber\Entities
  */
-class Specification implements SpecificationInterface, \Countable
+class Specification implements SpecificationInterface
 {
     /**
      * @var array
@@ -144,6 +144,6 @@ class Specification implements SpecificationInterface, \Countable
      */
     public function count() : int
     {
-        return count($this->fields);
+        return count($this->getFields());
     }
 }

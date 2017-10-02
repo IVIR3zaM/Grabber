@@ -5,7 +5,7 @@ namespace IVIR3aM\Grabber\Entities;
  * Interface SpecificationInterface
  * @package IVIR3aM\Grabber\Entities
  */
-interface SpecificationInterface
+interface SpecificationInterface extends \Countable
 {
     const TEXT = 'Text';
     const NUMBER = 'Number';

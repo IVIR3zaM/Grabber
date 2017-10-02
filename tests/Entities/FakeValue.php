@@ -7,6 +7,6 @@ class FakeValue extends Value
 {
     protected function setIntegerValue(string $name, int $value)
     {
-        $this->values[$name] = $value;
+        $this->items[$name] = $value;
     }
 }

@@ -1,43 +1,8 @@
 <?php
 namespace IVIR3aM\Grabber\Entities;
 
-class Value implements ValueInterface, \Countable
+class Value extends AbstractValue
 {
-    /**
-     * @var SpecificationInterface
-     */
-    protected $specification;
-
-    protected $values = [];
-    
-    public function __construct(SpecificationInterface $specification)
-    {
-        $this->setSpecification($specification);
-    }
-
-    public function setSpecification(SpecificationInterface $specification) : ValueInterface
-    {
-        $this->specification = $specification;
-        return $this;
-    }
-
-    public function getSpecification() : SpecificationInterface
-    {
-        return $this->specification;
-    }
-
-    protected function getFieldType(string $name) : string
-    {
-        $type = $this->getSpecification()->getField($name);
-        if (is_object($type) && is_a($type, SpecificationInterface::class)) {
-            return SpecificationInterface::ENTITY;
-        }
-        if (is_null($type)) {
-            throw new Exception(sprintf('Field "%s" Not Found', $name));
-        }
-        return $type;
-    }
-
     protected function getFieldFunction(string $name) : string
     {
         $function = 'set' . $this->getFieldType($name) . 'Value';
@@ -47,7 +12,7 @@ class Value implements ValueInterface, \Countable
         return $function;
     }
 
-    public function setValue(string $name, $value) : ValueInterface
+    public function setValue(string $name, $value) : AbstractValue
     {
         $function = $this->getFieldFunction($name);
         $this->$function($name, $value);
@@ -56,31 +21,12 @@ class Value implements ValueInterface, \Countable
 
     public function getValue(string $name)
     {
-        if (isset($this->values[$name])) {
-            return $this->values[$name];
-        }
-        try {
-            $type = $this->getFieldType($name);
-            if (SpecificationInterface::ENTITY == $type) {
-                $this->values[$name] = new self($this->getSpecification()->getField($name));
-                return $this->values[$name];
-            }
-        } catch (Exception $e){}
-    }
-
-    public function __set(string $name, $value) : ValueInterface
-    {
-        return $this->setValue($name, $value);
-    }
-
-    public function __get(string $name)
-    {
-        return $this->getValue($name);
+        return $this->getFieldValue($name);
     }
 
     protected function setTextValue(string $name, string $value)
     {
-        $this->values[$name] = $value;
+        $this->items[$name] = $value;
     }
 
     protected function setNumberValue(string $name, float $value)
@@ -88,12 +34,12 @@ class Value implements ValueInterface, \Countable
         if ($value == intval($value)) {
             $value = intval($value);
         }
-        $this->values[$name] = $value;
+        $this->items[$name] = $value;
     }
     
     protected function setBooleanValue(string $name, bool $value)
     {
-        $this->values[$name] = $value;
+        $this->items[$name] = $value;
     }
 
     protected function setFileValue(string $name, $value)
@@ -104,12 +50,12 @@ class Value implements ValueInterface, \Countable
         if ('stream' != get_resource_type($value)) {
             throw new Exception(sprintf('Invalid resource type "%s" filed, stream resource required', $name));
         }
-        $this->values[$name] = $value;
+        $this->items[$name] = $value;
     }
 
-    protected function setEntityValue(string $name, ValueInterface $value)
+    protected function setEntityValue(string $name, AbstractValue $value)
     {
-        $this->values[$name] = $value;
+        $this->items[$name] = $value;
     }
 
     public function getValues() : array
@@ -117,7 +63,7 @@ class Value implements ValueInterface, \Countable
         $list = [];
         foreach (array_keys($this->getSpecification()->getFields()) as $name) {
             $value = $this->getValue($name);
-            if (is_object($value) && is_a($value, ValueInterface::class)) {
+            if (is_object($value) && is_a($value, AbstractValue::class)) {
                 $value = $value->getValues();
             }
             $list[$name] = $value;
